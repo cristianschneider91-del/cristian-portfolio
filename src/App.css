@@ -230,7 +230,7 @@ img {
   }
 }
 
-/* NAVBAR FIJA CORREGIDA */
+/* NAVBAR FIJA */
 
 .navbar {
   position: fixed;
@@ -431,7 +431,8 @@ h1 span {
 }
 
 .btn-primary:hover,
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-copy:hover {
   transform: translateY(-3px);
 }
 
@@ -442,6 +443,20 @@ h1 span {
 }
 
 .btn-secondary:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* BOTÓN COPIAR EMAIL */
+
+.btn-copy {
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.7);
+  cursor: pointer;
+}
+
+.btn-copy:hover {
   border-color: var(--cyan);
   color: var(--cyan);
 }

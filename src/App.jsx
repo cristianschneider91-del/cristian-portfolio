@@ -25,6 +25,8 @@ import {
   X,
   Image as ImageIcon,
   ChevronUp,
+  Copy,
+  Check,
 } from "lucide-react";
 import "./App.css";
 
@@ -94,10 +96,13 @@ function ProjectShowcase({ project, index, onOpenImage }) {
 
 function App() {
   const whatsappNumber = "543751617994";
+  const emailAddress = "cristianschneider91@gmail.com";
+
   const [previewImage, setPreviewImage] = useState(null);
   const [activeSection, setActiveSection] = useState("inicio");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showTopButton, setShowTopButton] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   const sectionLinks = [
     { id: "inicio", label: "Inicio" },
@@ -107,6 +112,28 @@ function App() {
     { id: "tecnologias", label: "Tecnologías" },
     { id: "contacto", label: "Contacto" },
   ];
+
+  const links = {
+    whatsapp: `https://wa.me/${whatsappNumber}?text=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
+    email: `mailto:${emailAddress}?subject=Consulta%20por%20proyecto%20digital&body=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}&su=Consulta%20por%20proyecto%20digital&body=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
+    linkedin: "https://www.linkedin.com/in/cristian-schneider-712180376",
+    github: "https://github.com/cristianschneider91-del",
+    instagram: "https://www.instagram.com/schneider.soft",
+  };
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(emailAddress);
+      setCopiedEmail(true);
+
+      setTimeout(() => {
+        setCopiedEmail(false);
+      }, 2200);
+    } catch (error) {
+      console.error("No se pudo copiar el email:", error);
+    }
+  };
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
@@ -132,6 +159,7 @@ function App() {
       const height =
         document.documentElement.scrollHeight - window.innerHeight;
       const progress = height > 0 ? (scrollTop / height) * 100 : 0;
+
       setScrollProgress(progress);
       setShowTopButton(scrollTop > 500);
     };
@@ -143,14 +171,6 @@ function App() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const links = {
-    whatsapp: `https://wa.me/${whatsappNumber}?text=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
-    email: "mailto:cristianschneider91@gmail.com",
-    linkedin: "https://www.linkedin.com/in/cristian-schneider-712180376",
-    github: "https://github.com/cristianschneider91",
-    instagram: "https://www.instagram.com/crisschneiderr_",
-  };
 
   const services = [
     {
@@ -593,9 +613,7 @@ function App() {
               key={project.title}
               project={project}
               index={index}
-              onOpenImage={(image, title) =>
-                setPreviewImage({ image, title })
-              }
+              onOpenImage={(image, title) => setPreviewImage({ image, title })}
             />
           ))}
         </div>
@@ -783,7 +801,7 @@ function App() {
             </span>
             <span>
               <Mail size={18} />
-              cristianschneider91@gmail.com
+              {emailAddress}
             </span>
           </div>
 
@@ -818,10 +836,20 @@ function App() {
             Escribirme por WhatsApp
           </a>
 
-          <a href={links.email} className="btn btn-secondary">
+          <a
+            href={links.gmail}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-secondary"
+          >
             <Mail size={18} />
-            Enviar email
+            Enviar email por Gmail
           </a>
+
+          <button type="button" className="btn btn-copy" onClick={handleCopyEmail}>
+            {copiedEmail ? <Check size={18} /> : <Copy size={18} />}
+            {copiedEmail ? "Email copiado" : "Copiar email"}
+          </button>
         </motion.div>
       </section>
 
