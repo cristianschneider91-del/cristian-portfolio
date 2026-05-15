@@ -135,8 +135,12 @@ function App() {
     }
   };
 
+  const handleNavClick = (sectionId) => {
+    setActiveSection(sectionId);
+  };
+
   useEffect(() => {
-    const handleScroll = () => {
+    const updateScrollData = () => {
       const scrollTop = window.scrollY;
       const documentHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -147,40 +151,84 @@ function App() {
       setScrollProgress(progress);
       setShowTopButton(scrollTop > 500);
 
-      const offset = 170;
+      if (scrollTop < 120) {
+        setActiveSection("inicio");
+        return;
+      }
+
+      const detectionLine = window.innerHeight * 0.38;
       let currentSection = "inicio";
+      let bestDistance = Number.POSITIVE_INFINITY;
 
       sectionLinks.forEach((item) => {
         const section = document.getElementById(item.id);
 
-        if (section) {
-          const sectionTop = section.offsetTop - offset;
+        if (!section) return;
 
-          if (scrollTop >= sectionTop) {
+        const rect = section.getBoundingClientRect();
+
+        const sectionIsVisible =
+          rect.top <= detectionLine && rect.bottom >= detectionLine;
+
+        if (sectionIsVisible) {
+          const distance = Math.abs(rect.top - detectionLine);
+
+          if (distance < bestDistance) {
+            bestDistance = distance;
             currentSection = item.id;
           }
         }
       });
 
-      const isNearBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 160;
+      const visibleSectionFound = sectionLinks.some((item) => {
+        const section = document.getElementById(item.id);
 
-      if (isNearBottom) {
+        if (!section) return false;
+
+        const rect = section.getBoundingClientRect();
+
+        return rect.top <= detectionLine && rect.bottom >= detectionLine;
+      });
+
+      if (!visibleSectionFound) {
+        let closestSection = "inicio";
+        let closestTop = Number.NEGATIVE_INFINITY;
+
+        sectionLinks.forEach((item) => {
+          const section = document.getElementById(item.id);
+
+          if (!section) return;
+
+          const rect = section.getBoundingClientRect();
+
+          if (rect.top <= detectionLine && rect.top > closestTop) {
+            closestTop = rect.top;
+            closestSection = item.id;
+          }
+        });
+
+        currentSection = closestSection;
+      }
+
+      const isAtBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 80;
+
+      if (isAtBottom) {
         currentSection = "contacto";
       }
 
       setActiveSection(currentSection);
     };
 
-    handleScroll();
+    updateScrollData();
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleScroll);
+    window.addEventListener("scroll", updateScrollData, { passive: true });
+    window.addEventListener("resize", updateScrollData);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("scroll", updateScrollData);
+      window.removeEventListener("resize", updateScrollData);
     };
   }, []);
 
@@ -391,7 +439,11 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <a href="#inicio" className="brand">
+          <a
+            href="#inicio"
+            className="brand"
+            onClick={() => handleNavClick("inicio")}
+          >
             <span className="brand-icon">
               <Code2 size={25} />
             </span>
@@ -406,6 +458,7 @@ function App() {
               <a
                 key={item.id}
                 href={`#${item.id}`}
+                onClick={() => handleNavClick(item.id)}
                 className={`nav-link ${
                   activeSection === item.id ? "nav-link-active" : ""
                 }`}
