@@ -136,39 +136,51 @@ function App() {
   };
 
   useEffect(() => {
-    const sections = document.querySelectorAll("section[id]");
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        threshold: 0.35,
-        rootMargin: "-80px 0px -40% 0px",
-      }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      const height =
+      const documentHeight =
         document.documentElement.scrollHeight - window.innerHeight;
-      const progress = height > 0 ? (scrollTop / height) * 100 : 0;
+
+      const progress =
+        documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
 
       setScrollProgress(progress);
       setShowTopButton(scrollTop > 500);
+
+      const offset = 170;
+      let currentSection = "inicio";
+
+      sectionLinks.forEach((item) => {
+        const section = document.getElementById(item.id);
+
+        if (section) {
+          const sectionTop = section.offsetTop - offset;
+
+          if (scrollTop >= sectionTop) {
+            currentSection = item.id;
+          }
+        }
+      });
+
+      const isNearBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 160;
+
+      if (isNearBottom) {
+        currentSection = "contacto";
+      }
+
+      setActiveSection(currentSection);
     };
 
+    handleScroll();
+
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
 
     return () => {
-      sections.forEach((section) => observer.unobserve(section));
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
     };
   }, []);
 
