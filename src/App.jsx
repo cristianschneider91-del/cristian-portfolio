@@ -15,7 +15,6 @@ import {
   MapPin,
   ArrowRight,
   Sparkles,
-  CheckCircle2,
   Workflow,
   ShieldCheck,
   Rocket,
@@ -165,7 +164,6 @@ function App() {
         if (!section) return;
 
         const rect = section.getBoundingClientRect();
-
         const sectionIsVisible =
           rect.top <= detectionLine && rect.bottom >= detectionLine;
 
@@ -509,11 +507,13 @@ function App() {
                 <MessageCircle size={18} />
                 Contactanos por WhatsApp
               </a>
+            </div>
 
-              <span className="quick-pill">Aplicaciones Android e iOS</span>
-              <span className="quick-pill">Webs profesionales</span>
-              <span className="quick-pill">Sistemas de gestión</span>
-              <span className="quick-pill">Tarjetas digitales</span>
+            <div className="hero-pills">
+              <span>Aplicaciones Android e iOS</span>
+              <span>Webs profesionales</span>
+              <span>Sistemas de gestión</span>
+              <span>Tarjetas digitales</span>
             </div>
           </motion.div>
 
