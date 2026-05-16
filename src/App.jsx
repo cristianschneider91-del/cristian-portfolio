@@ -115,7 +115,6 @@ function App() {
 
   const links = {
     whatsapp: `https://wa.me/${whatsappNumber}?text=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
-    email: `mailto:${emailAddress}?subject=Consulta%20por%20proyecto%20digital&body=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
     gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}&su=Consulta%20por%20proyecto%20digital&body=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
     linkedin: "https://www.linkedin.com/in/cristian-schneider-712180376",
     github: "https://github.com/cristianschneider91-del",
@@ -484,12 +483,12 @@ function App() {
 
             <h1>
               Desarrollo software y soluciones digitales para negocios que
-              quieren <span>crecer con tecnología</span>.
+              quieren <span>crecer con tecnología</span>
             </h1>
 
             <p className="hero-description">
               Creo aplicaciones móviles, sistemas de escritorio, páginas web,
-              tarjetas digitales y brochures profesionales, pensados para ayudar
+              tarjetas digitales y folletos profesionales, pensados para ayudar
               a negocios, emprendedores y profesionales a organizarse mejor,
               presentarse con mayor confianza y dar el siguiente paso en el
               mundo digital.
@@ -508,15 +507,13 @@ function App() {
                 className="btn btn-secondary"
               >
                 <MessageCircle size={18} />
-                Contactar por WhatsApp
+                Contactanos por WhatsApp
               </a>
-            </div>
 
-            <div className="hero-pills">
-              <span>Apps Android e iOS</span>
-              <span>Webs profesionales</span>
-              <span>Sistemas de gestión</span>
-              <span>Tarjetas digitales</span>
+              <span className="quick-pill">Aplicaciones Android e iOS</span>
+              <span className="quick-pill">Webs profesionales</span>
+              <span className="quick-pill">Sistemas de gestión</span>
+              <span className="quick-pill">Tarjetas digitales</span>
             </div>
           </motion.div>
 
@@ -533,30 +530,30 @@ function App() {
                   <span></span>
                   <span></span>
                 </div>
-                <p>solution.config</p>
+                <p>solución.config</p>
               </div>
 
               <div className="code-card">
                 <p>
                   <span className="code-purple">const</span>{" "}
-                  <span className="code-blue">solution</span> = {"{"}
+                  <span className="code-blue">solución</span> = {"{"}
                 </p>
                 <p>
-                  &nbsp;&nbsp;brand:{" "}
+                  &nbsp;&nbsp;marca:{" "}
                   <span className="code-green">"Cristian Schneider"</span>,
                 </p>
                 <p>
-                  &nbsp;&nbsp;focus:{" "}
+                  &nbsp;&nbsp;enfoque:{" "}
                   <span className="code-green">"negocios"</span>,
                 </p>
                 <p>
-                  &nbsp;&nbsp;services: [
-                  <span className="code-green">"apps"</span>,{" "}
-                  <span className="code-green">"web"</span>,{" "}
+                  &nbsp;&nbsp;servicios: [
+                  <span className="code-green">"aplicaciones"</span>,{" "}
+                  <span className="code-green">"webs"</span>,{" "}
                   <span className="code-green">"sistemas"</span>],
                 </p>
                 <p>
-                  &nbsp;&nbsp;result:{" "}
+                  &nbsp;&nbsp;resultado:{" "}
                   <span className="code-green">"crecimiento digital"</span>
                 </p>
                 <p>{"}"}</p>
@@ -580,30 +577,6 @@ function App() {
             </div>
           </motion.div>
         </div>
-
-        <motion.div
-          className="hero-strip"
-          initial={{ opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
-        >
-          <div>
-            <Rocket size={22} />
-            <span>Soluciones a medida</span>
-          </div>
-          <div>
-            <ShieldCheck size={22} />
-            <span>Calidad y confianza</span>
-          </div>
-          <div>
-            <Code2 size={22} />
-            <span>Código limpio y escalable</span>
-          </div>
-          <div>
-            <CheckCircle2 size={22} />
-            <span>Resultados reales</span>
-          </div>
-        </motion.div>
       </section>
 
       <section className="section" id="servicios">
@@ -820,7 +793,7 @@ function App() {
           <h2>Antes de empezar un proyecto</h2>
           <p>
             Algunas respuestas rápidas para quienes quieren consultar por una
-            página, app, tarjeta digital, brochure o sistema a medida.
+            página, app, tarjeta digital, folleto o sistema a medida.
           </p>
         </motion.div>
 
