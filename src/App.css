@@ -1574,3 +1574,563 @@ h1 span {
     font-size: 13px;
   }
 }
+/* =========================================================
+   MEJORAS MOBILE - VERSION COMPACTA Y PROFESIONAL
+   ========================================================= */
+
+@media (max-width: 860px) {
+  body {
+    background: #020617;
+  }
+
+  .page {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(30, 136, 255, 0.22), transparent 32%),
+      linear-gradient(180deg, #020617 0%, #03111f 38%, #020617 100%);
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 118px 18px 42px;
+  }
+
+  .grid-overlay {
+    background-size: 42px 42px;
+    opacity: 0.65;
+  }
+
+  .animated-gradient,
+  .orb,
+  .hero-bg-image,
+  .hero-bg-glow {
+    display: none;
+  }
+
+  .navbar {
+    top: 10px;
+    width: calc(100% - 22px);
+    padding: 12px;
+    border-radius: 24px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    background: rgba(2, 6, 23, 0.88);
+  }
+
+  .brand {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    flex-shrink: 0;
+  }
+
+  .brand span:last-child {
+    min-width: 0;
+  }
+
+  .brand small {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .nav-link {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    font-size: 13px;
+    scroll-snap-align: start;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.14);
+  }
+
+  .nav-link-active {
+    background: linear-gradient(
+      135deg,
+      rgba(30, 136, 255, 0.42),
+      rgba(56, 189, 248, 0.22)
+    );
+    border-color: rgba(56, 189, 248, 0.48);
+  }
+
+  .hero-layout {
+    display: block;
+    padding-top: 28px;
+  }
+
+  .hero-content {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .badge {
+    margin: 0 auto 24px;
+    width: 100%;
+    justify-content: center;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+    border-radius: 28px;
+  }
+
+  h1 {
+    color: #ffffff;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -1.8px;
+    margin-bottom: 22px;
+  }
+
+  h1 span {
+    display: inline;
+    color: transparent;
+    background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 40%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .hero-description {
+    max-width: 100%;
+    font-size: 17px;
+    line-height: 1.58;
+    margin-bottom: 28px;
+    color: #dbeafe;
+  }
+
+  .hero-actions {
+    gap: 12px;
+  }
+
+  .hero-actions .btn {
+    min-height: 52px;
+    font-size: 15px;
+  }
+
+  .hero-pills {
+    margin-top: 24px;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .hero-pills span {
+    font-size: 12px;
+    padding: 8px 11px;
+  }
+
+  .hero-showcase {
+    display: none;
+  }
+
+  .hero-strip {
+    display: none;
+  }
+
+  .section {
+    padding: 58px 18px;
+  }
+
+  .section-header {
+    margin-bottom: 26px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 2.2px;
+    margin-bottom: 12px;
+  }
+
+  .section-header h2,
+  .about-layout h2,
+  .contact h2 {
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+  }
+
+  .section-header p,
+  .about-card p,
+  .contact p,
+  .process-card p,
+  .faq-card p {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  /* SERVICIOS EN MOBILE */
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .service-card {
+    min-height: auto;
+    padding: 20px;
+    border-radius: 24px;
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    column-gap: 15px;
+    align-items: start;
+    text-align: left;
+  }
+
+  .service-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    margin-bottom: 0;
+  }
+
+  .service-card h3 {
+    font-size: 20px;
+    margin-bottom: 7px;
+  }
+
+  .service-card p {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .service-tags {
+    grid-column: 1 / -1;
+    margin-top: 16px;
+    gap: 7px;
+  }
+
+  .service-tags span {
+    font-size: 11px;
+    padding: 6px 9px;
+  }
+
+  /* PROYECTOS EN MOBILE */
+
+  .projects-list {
+    gap: 22px;
+  }
+
+  .project-card {
+    padding: 18px;
+    border-radius: 26px;
+    gap: 20px;
+  }
+
+  .featured-image {
+    height: 300px;
+    border-radius: 22px;
+  }
+
+  .featured-image img {
+    padding: 8px;
+  }
+
+  .thumbnail-row {
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
+  .thumbnail {
+    min-width: 68px;
+    height: 68px;
+    border-radius: 14px;
+  }
+
+  .project-top {
+    margin-bottom: 16px;
+  }
+
+  .project-card h3 {
+    font-size: 26px;
+    line-height: 1.12;
+    text-align: left;
+  }
+
+  .project-card p {
+    font-size: 15px;
+    line-height: 1.55;
+    text-align: left;
+  }
+
+  .project-tech {
+    margin-top: 18px;
+    gap: 7px;
+  }
+
+  .project-counter {
+    font-size: 12px;
+    margin-top: 14px;
+  }
+
+  /* PROCESO */
+
+  .process-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .process-card {
+    min-height: auto;
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .process-card span {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .process-card svg {
+    margin-bottom: 14px;
+  }
+
+  .process-card h3 {
+    font-size: 21px;
+  }
+
+  .process-card p {
+    font-size: 15px;
+  }
+
+  /* TECNOLOGIAS */
+
+  .tech-list {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .tech-list span {
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+
+  /* SOBRE MI */
+
+  .about-layout {
+    gap: 22px;
+  }
+
+  .about-card {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .about-card p {
+    font-size: 15px;
+  }
+
+  .about-highlights {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .about-highlights div {
+    padding: 15px;
+    border-radius: 18px;
+  }
+
+  /* FAQ */
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .faq-card {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .faq-card h3 {
+    font-size: 20px;
+  }
+
+  .faq-card p {
+    font-size: 15px;
+  }
+
+  /* CONTACTO */
+
+  .contact {
+    width: calc(100% - 36px);
+    margin-top: 28px;
+    padding: 26px 20px;
+    border-radius: 28px;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .contact-info {
+    justify-items: center;
+  }
+
+  .contact-info span {
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .social-contact {
+    justify-content: center;
+    gap: 9px;
+  }
+
+  .social-contact a {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .contact-actions {
+    justify-content: center;
+  }
+
+  .contact-actions .btn {
+    min-height: 50px;
+    font-size: 14px;
+  }
+
+  .footer {
+    padding: 30px 18px 90px;
+    text-align: center;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+
+  .back-to-top {
+    right: 18px;
+    bottom: 84px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 460px) {
+  .hero {
+    padding-top: 128px;
+  }
+
+  .navbar {
+    width: calc(100% - 18px);
+    padding: 11px;
+    border-radius: 22px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .brand small {
+    font-size: 10px;
+    letter-spacing: 1.7px;
+  }
+
+  .nav-link {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .badge {
+    font-size: 13px;
+    padding: 11px 13px;
+  }
+
+  h1 {
+    font-size: 32px;
+    line-height: 1.08;
+    letter-spacing: -1.4px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+    line-height: 1.52;
+  }
+
+  .section {
+    padding: 52px 16px;
+  }
+
+  .section-header h2,
+  .about-layout h2,
+  .contact h2 {
+    font-size: 28px;
+  }
+
+  .service-card {
+    grid-template-columns: 48px 1fr;
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .service-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+  }
+
+  .service-card h3 {
+    font-size: 19px;
+  }
+
+  .service-card p {
+    font-size: 14px;
+  }
+
+  .featured-image {
+    height: 260px;
+  }
+
+  .thumbnail {
+    min-width: 62px;
+    height: 62px;
+  }
+
+  .project-card h3 {
+    font-size: 24px;
+  }
+
+  .project-card p {
+    font-size: 14px;
+  }
+
+  .contact {
+    width: calc(100% - 28px);
+    padding: 24px 18px;
+  }
+
+  .modal-content {
+    width: 94vw;
+  }
+
+  .modal-content img {
+    max-height: 72vh;
+  }
+}
