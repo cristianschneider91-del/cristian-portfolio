@@ -322,6 +322,12 @@ function App() {
         "/Proyectos/tarj4.png",
         "/Proyectos/tarj5.png",
         "/Proyectos/tarj6.png",
+        "/Proyectos/garota-shop-1.png",
+        "/Proyectos/garota-shop-2.png",
+        "/Proyectos/garota-shop-3.png",
+        "/Proyectos/bait-servicio-tecnico-1.png",
+        "/Proyectos/bait-servicio-tecnico-2.png",
+        "/Proyectos/bait-servicio-tecnico-3.png",
       ],
     },
     {
