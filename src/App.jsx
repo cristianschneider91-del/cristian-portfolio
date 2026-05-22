@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Smartphone,
   Monitor,
@@ -29,8 +29,221 @@ import {
 } from "lucide-react";
 import "./App.css";
 
+// ─── DATOS ESTÁTICOS FUERA DEL COMPONENTE ───────────────────────────────────
+// Evita que se recreen en cada render
+
+const SECTION_LINKS = [
+  { id: "inicio", label: "Inicio" },
+  { id: "servicios", label: "Servicios" },
+  { id: "proyectos", label: "Proyectos" },
+  { id: "proceso", label: "Proceso" },
+  { id: "tecnologias", label: "Tecnologías" },
+  { id: "contacto", label: "Contacto" },
+];
+
+const SERVICES = [
+  {
+    title: "Aplicaciones móviles",
+    description:
+      "Apps para Android e iOS orientadas a resolver necesidades reales de negocios, servicios y usuarios.",
+    icon: Smartphone,
+    items: ["Android", "iOS", "Apps a medida"],
+  },
+  {
+    title: "Aplicaciones de escritorio",
+    description:
+      "Software de escritorio para administración, carga de datos, procesos internos y gestión operativa.",
+    icon: Monitor,
+    items: ["Gestión", "Administración", "Multiplataforma"],
+  },
+  {
+    title: "Sistemas de gestión",
+    description:
+      "Soluciones para organizar productos, clientes, ventas, stock, órdenes de trabajo y resultados.",
+    icon: LayoutDashboard,
+    items: ["Stock", "Ventas", "Reportes"],
+  },
+  {
+    title: "Páginas web y landing pages",
+    description:
+      "Sitios modernos, responsivos y enfocados en mostrar servicios, generar confianza y captar consultas.",
+    icon: Globe,
+    items: ["Web profesional", "Landing", "Portfolio"],
+  },
+  {
+    title: "Tarjetas digitales",
+    description:
+      "Presentaciones digitales para compartir contacto, ubicación, horarios, servicios y redes en un solo lugar.",
+    icon: CreditCard,
+    items: ["QR", "WhatsApp", "Contacto"],
+  },
+  {
+    title: "Brochures profesionales",
+    description:
+      "Materiales digitales para presentar negocios, servicios, propuestas comerciales o marca personal.",
+    icon: FileText,
+    items: ["PDF", "Redes", "Comercial"],
+  },
+  {
+    title: "Mantenimiento y mejoras",
+    description:
+      "Ajustes, mejoras visuales, optimización y evolución de sistemas o piezas digitales existentes.",
+    icon: Wrench,
+    items: ["Mejoras", "Soporte", "Optimización"],
+  },
+  {
+    title: "Presencia digital para comercios",
+    description:
+      "Diseño de soluciones simples para que comercios y profesionales se vean más confiables y modernos.",
+    icon: Rocket,
+    items: ["Marca", "Clientes", "Imagen"],
+  },
+];
+
+const PROJECTS = [
+  {
+    title: "App móvil de gestión para taller mecánico",
+    type: "Aplicación móvil",
+    status: "Finalizado",
+    description:
+      "Aplicación personalizada para la gestión técnica y administrativa de un taller mecánico. Permite registrar clientes y vehículos, crear órdenes de trabajo, cargar servicios y costos, adjuntar fotos o archivos, generar presupuestos/facturas, administrar copias de seguridad y consultar un manual de uso interno.",
+    technologies: ["Android Studio", "Gestión", "Backup", "PDF"],
+    images: [
+      "/Proyectos/app-taller1.jpg",
+      "/Proyectos/app-taller2.jpg",
+      "/Proyectos/app-taller3.jpg",
+      "/Proyectos/app-taller4.jpg",
+      "/Proyectos/app-taller5.jpg",
+      "/Proyectos/app-taller6.jpg",
+      "/Proyectos/app-taller7.jpg",
+      "/Proyectos/app-taller8.jpg",
+      "/Proyectos/app-taller9.jpg",
+    ],
+  },
+  {
+    title: "Tarjetas digitales profesionales",
+    type: "Tarjeta digital",
+    status: "Finalizado",
+    description:
+      "Diseño de tarjetas digitales personalizadas para profesionales y comercios, pensadas para compartir información de contacto, horarios, ubicación, servicios e identidad visual de forma clara y profesional.",
+    technologies: ["Diseño digital", "QR", "HTML/CSS", "Presentación"],
+    images: [
+      "/Proyectos/tarj1.png",
+      "/Proyectos/tarj2.png",
+      "/Proyectos/tarj3.png",
+      "/Proyectos/tarj4.png",
+      "/Proyectos/tarj5.png",
+      "/Proyectos/tarj6.png",
+      "/Proyectos/garota-shop-1.png",
+      "/Proyectos/garota-shop-2.png",
+      "/Proyectos/garota-shop-3.png",
+      "/Proyectos/bait-servicio-tecnico-1.png",
+      "/Proyectos/bait-servicio-tecnico-2.png",
+      "/Proyectos/bait-servicio-tecnico-3.png",
+    ],
+  },
+  {
+    title: "Brochures digitales para negocios",
+    type: "Brochure digital",
+    status: "Finalizado",
+    description:
+      "Brochures orientados a presentar servicios digitales, aplicaciones móviles, páginas web, tarjetas digitales, soluciones a medida y propuestas comerciales para negocios o marca personal.",
+    technologies: ["Diseño digital", "Brochure", "PDF", "Marketing"],
+    images: [
+      "/Proyectos/brochure1.png",
+      "/Proyectos/brochure2.png",
+      "/Proyectos/brochure3.png",
+    ],
+  },
+];
+
+const TECHNOLOGIES = [
+  "Android Studio",
+  "React",
+  "JavaScript",
+  "HTML",
+  "CSS",
+  "C#",
+  "SQL",
+  "Bases de datos",
+  "Git",
+  "GitHub",
+  "Visual Studio",
+  "Vite",
+];
+
+const PROCESS = [
+  {
+    title: "Escucho tu idea",
+    description:
+      "Analizo tu necesidad, el objetivo del proyecto y qué problema debería resolver la solución digital.",
+    icon: MessageCircle,
+  },
+  {
+    title: "Diseño una propuesta",
+    description:
+      "Defino una estructura clara, funcionalidades principales, alcance inicial y una experiencia simple para el usuario.",
+    icon: Workflow,
+  },
+  {
+    title: "Desarrollo la solución",
+    description:
+      "Construyo el proyecto con foco en funcionalidad, diseño, orden, escalabilidad y facilidad de uso.",
+    icon: Code2,
+  },
+  {
+    title: "Entrega y mejoras",
+    description:
+      "Reviso el resultado, ajusto detalles y dejo la solución lista para presentar, usar o seguir evolucionando.",
+    icon: ShieldCheck,
+  },
+];
+
+const FAQS = [
+  {
+    question: "¿Trabajás con negocios pequeños o emprendimientos?",
+    answer:
+      "Sí. La idea es crear soluciones digitales accesibles y profesionales para negocios, emprendedores y profesionales que quieran mejorar su presencia digital.",
+  },
+  {
+    question: "¿Puedo pedir una página simple para empezar?",
+    answer:
+      "Sí. Se puede comenzar con una landing page o página de presentación y luego agregar más secciones, funcionalidades o integraciones.",
+  },
+  {
+    question: "¿Hacés tarjetas digitales para compartir por WhatsApp?",
+    answer:
+      "Sí. Las tarjetas digitales son ideales para compartir datos de contacto, servicios, redes, ubicación, horarios y enlaces importantes desde un solo lugar.",
+  },
+  {
+    question: "¿Puedo pedir una app o sistema a medida?",
+    answer:
+      "Sí. Primero se analiza la necesidad, el flujo de trabajo y las funciones principales para definir una solución útil y ordenada.",
+  },
+  {
+    question: "¿Mostrás precios fijos?",
+    answer:
+      "No por ahora. Cada proyecto puede tener distinto alcance, por eso se trabaja con presupuesto según necesidad. Las consultas son sin compromiso.",
+  },
+];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 34 },
+  visible: { opacity: 1, y: 0 },
+};
+
+// ─── COMPONENTE PROJECT SHOWCASE ────────────────────────────────────────────
+
 function ProjectShowcase({ project, index, onOpenImage }) {
   const [activeImage, setActiveImage] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Resetea el estado de carga al cambiar de imagen
+  const handleThumbnailClick = (imageIndex) => {
+    if (imageIndex === activeImage) return;
+    setImageLoaded(false);
+    setActiveImage(imageIndex);
+  };
 
   return (
     <motion.article
@@ -41,14 +254,27 @@ function ProjectShowcase({ project, index, onOpenImage }) {
       transition={{ duration: 0.65, delay: index * 0.08 }}
     >
       <div className="project-media">
+        {/* Imagen principal con skeleton loader y fade al cambiar */}
         <button
-          className="featured-image"
+          className={`featured-image${!imageLoaded ? " image-loading" : ""}`}
           onClick={() => onOpenImage(project.images[activeImage], project.title)}
+          aria-label={`Ver imagen ampliada de ${project.title}`}
         >
-          <img
-            src={project.images[activeImage]}
-            alt={`${project.title} imagen principal`}
-          />
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={activeImage}
+              src={project.images[activeImage]}
+              alt={`${project.title} imagen principal`}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+              style={{ opacity: imageLoaded ? 1 : 0 }}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: imageLoaded ? 1 : 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.3 }}
+            />
+          </AnimatePresence>
           <span className="image-action">
             <ImageIcon size={18} />
             Ver imagen
@@ -59,12 +285,16 @@ function ProjectShowcase({ project, index, onOpenImage }) {
           {project.images.map((image, imageIndex) => (
             <button
               key={image}
-              className={`thumbnail ${
-                activeImage === imageIndex ? "thumbnail-active" : ""
-              }`}
-              onClick={() => setActiveImage(imageIndex)}
+              className={`thumbnail${activeImage === imageIndex ? " thumbnail-active" : ""}`}
+              onClick={() => handleThumbnailClick(imageIndex)}
+              aria-label={`Ver imagen ${imageIndex + 1} de ${project.title}`}
             >
-              <img src={image} alt={`${project.title} ${imageIndex + 1}`} />
+              <img
+                src={image}
+                alt={`${project.title} ${imageIndex + 1}`}
+                loading="lazy"
+                decoding="async"
+              />
             </button>
           ))}
         </div>
@@ -93,6 +323,8 @@ function ProjectShowcase({ project, index, onOpenImage }) {
   );
 }
 
+// ─── COMPONENTE PRINCIPAL ────────────────────────────────────────────────────
+
 function App() {
   const whatsappNumber = "543751617994";
   const emailAddress = "cristianschneider91@gmail.com";
@@ -102,15 +334,6 @@ function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showTopButton, setShowTopButton] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
-
-  const sectionLinks = [
-    { id: "inicio", label: "Inicio" },
-    { id: "servicios", label: "Servicios" },
-    { id: "proyectos", label: "Proyectos" },
-    { id: "proceso", label: "Proceso" },
-    { id: "tecnologias", label: "Tecnologías" },
-    { id: "contacto", label: "Contacto" },
-  ];
 
   const links = {
     whatsapp: `https://wa.me/${whatsappNumber}?text=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
@@ -124,10 +347,7 @@ function App() {
     try {
       await navigator.clipboard.writeText(emailAddress);
       setCopiedEmail(true);
-
-      setTimeout(() => {
-        setCopiedEmail(false);
-      }, 2200);
+      setTimeout(() => setCopiedEmail(false), 2200);
     } catch (error) {
       console.error("No se pudo copiar el email:", error);
     }
@@ -137,295 +357,126 @@ function App() {
     setActiveSection(sectionId);
   };
 
+  // ─── Cerrar modal con Escape ──────────────────────────────────────────────
   useEffect(() => {
-    const updateScrollData = () => {
-      const scrollTop = window.scrollY;
-      const documentHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setPreviewImage(null);
+    };
+    if (previewImage) {
+      window.addEventListener("keydown", handleKeyDown);
+      // Bloquea scroll del body mientras el modal está abierto
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [previewImage]);
 
-      const progress =
-        documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
+  // ─── Scroll con requestAnimationFrame para evitar jank ───────────────────
+  const updateScrollData = useCallback(() => {
+    const scrollTop = window.scrollY;
+    const documentHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
 
-      setScrollProgress(progress);
-      setShowTopButton(scrollTop > 500);
+    const progress =
+      documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
 
-      if (scrollTop < 120) {
-        setActiveSection("inicio");
-        return;
+    setScrollProgress(progress);
+    setShowTopButton(scrollTop > 500);
+
+    if (scrollTop < 120) {
+      setActiveSection("inicio");
+      return;
+    }
+
+    const detectionLine = window.innerHeight * 0.38;
+    let currentSection = "inicio";
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    SECTION_LINKS.forEach((item) => {
+      const section = document.getElementById(item.id);
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const sectionIsVisible =
+        rect.top <= detectionLine && rect.bottom >= detectionLine;
+
+      if (sectionIsVisible) {
+        const distance = Math.abs(rect.top - detectionLine);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          currentSection = item.id;
+        }
       }
+    });
 
-      const detectionLine = window.innerHeight * 0.38;
-      let currentSection = "inicio";
-      let bestDistance = Number.POSITIVE_INFINITY;
+    const visibleSectionFound = SECTION_LINKS.some((item) => {
+      const section = document.getElementById(item.id);
+      if (!section) return false;
+      const rect = section.getBoundingClientRect();
+      return rect.top <= detectionLine && rect.bottom >= detectionLine;
+    });
 
-      sectionLinks.forEach((item) => {
+    if (!visibleSectionFound) {
+      let closestSection = "inicio";
+      let closestTop = Number.NEGATIVE_INFINITY;
+
+      SECTION_LINKS.forEach((item) => {
         const section = document.getElementById(item.id);
-
         if (!section) return;
-
         const rect = section.getBoundingClientRect();
-        const sectionIsVisible =
-          rect.top <= detectionLine && rect.bottom >= detectionLine;
-
-        if (sectionIsVisible) {
-          const distance = Math.abs(rect.top - detectionLine);
-
-          if (distance < bestDistance) {
-            bestDistance = distance;
-            currentSection = item.id;
-          }
+        if (rect.top <= detectionLine && rect.top > closestTop) {
+          closestTop = rect.top;
+          closestSection = item.id;
         }
       });
 
-      const visibleSectionFound = sectionLinks.some((item) => {
-        const section = document.getElementById(item.id);
+      currentSection = closestSection;
+    }
 
-        if (!section) return false;
+    const isAtBottom =
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 80;
 
-        const rect = section.getBoundingClientRect();
+    if (isAtBottom) currentSection = "contacto";
 
-        return rect.top <= detectionLine && rect.bottom >= detectionLine;
-      });
+    setActiveSection(currentSection);
+  }, []);
 
-      if (!visibleSectionFound) {
-        let closestSection = "inicio";
-        let closestTop = Number.NEGATIVE_INFINITY;
+  useEffect(() => {
+    let ticking = false;
 
-        sectionLinks.forEach((item) => {
-          const section = document.getElementById(item.id);
-
-          if (!section) return;
-
-          const rect = section.getBoundingClientRect();
-
-          if (rect.top <= detectionLine && rect.top > closestTop) {
-            closestTop = rect.top;
-            closestSection = item.id;
-          }
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateScrollData();
+          ticking = false;
         });
-
-        currentSection = closestSection;
+        ticking = true;
       }
-
-      const isAtBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 80;
-
-      if (isAtBottom) {
-        currentSection = "contacto";
-      }
-
-      setActiveSection(currentSection);
     };
 
     updateScrollData();
-
-    window.addEventListener("scroll", updateScrollData, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", updateScrollData);
 
     return () => {
-      window.removeEventListener("scroll", updateScrollData);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", updateScrollData);
     };
-  }, []);
-
-  const services = [
-    {
-      title: "Aplicaciones móviles",
-      description:
-        "Apps para Android e iOS orientadas a resolver necesidades reales de negocios, servicios y usuarios.",
-      icon: Smartphone,
-      items: ["Android", "iOS", "Apps a medida"],
-    },
-    {
-      title: "Aplicaciones de escritorio",
-      description:
-        "Software de escritorio para administración, carga de datos, procesos internos y gestión operativa.",
-      icon: Monitor,
-      items: ["Gestión", "Administración", "Multiplataforma"],
-    },
-    {
-      title: "Sistemas de gestión",
-      description:
-        "Soluciones para organizar productos, clientes, ventas, stock, órdenes de trabajo y resultados.",
-      icon: LayoutDashboard,
-      items: ["Stock", "Ventas", "Reportes"],
-    },
-    {
-      title: "Páginas web y landing pages",
-      description:
-        "Sitios modernos, responsivos y enfocados en mostrar servicios, generar confianza y captar consultas.",
-      icon: Globe,
-      items: ["Web profesional", "Landing", "Portfolio"],
-    },
-    {
-      title: "Tarjetas digitales",
-      description:
-        "Presentaciones digitales para compartir contacto, ubicación, horarios, servicios y redes en un solo lugar.",
-      icon: CreditCard,
-      items: ["QR", "WhatsApp", "Contacto"],
-    },
-    {
-      title: "Brochures profesionales",
-      description:
-        "Materiales digitales para presentar negocios, servicios, propuestas comerciales o marca personal.",
-      icon: FileText,
-      items: ["PDF", "Redes", "Comercial"],
-    },
-    {
-      title: "Mantenimiento y mejoras",
-      description:
-        "Ajustes, mejoras visuales, optimización y evolución de sistemas o piezas digitales existentes.",
-      icon: Wrench,
-      items: ["Mejoras", "Soporte", "Optimización"],
-    },
-    {
-      title: "Presencia digital para comercios",
-      description:
-        "Diseño de soluciones simples para que comercios y profesionales se vean más confiables y modernos.",
-      icon: Rocket,
-      items: ["Marca", "Clientes", "Imagen"],
-    },
-  ];
-
-  const projects = [
-    {
-      title: "App móvil de gestión para taller mecánico",
-      type: "Aplicación móvil",
-      status: "Finalizado",
-      description:
-        "Aplicación personalizada para la gestión técnica y administrativa de un taller mecánico. Permite registrar clientes y vehículos, crear órdenes de trabajo, cargar servicios y costos, adjuntar fotos o archivos, generar presupuestos/facturas, administrar copias de seguridad y consultar un manual de uso interno.",
-      technologies: ["Android Studio", "Gestión", "Backup", "PDF"],
-      images: [
-        "/Proyectos/app-taller1.jpg",
-        "/Proyectos/app-taller2.jpg",
-        "/Proyectos/app-taller3.jpg",
-        "/Proyectos/app-taller4.jpg",
-        "/Proyectos/app-taller5.jpg",
-        "/Proyectos/app-taller6.jpg",
-        "/Proyectos/app-taller7.jpg",
-        "/Proyectos/app-taller8.jpg",
-        "/Proyectos/app-taller9.jpg",
-      ],
-    },
-    {
-      title: "Tarjetas digitales profesionales",
-      type: "Tarjeta digital",
-      status: "Finalizado",
-      description:
-        "Diseño de tarjetas digitales personalizadas para profesionales y comercios, pensadas para compartir información de contacto, horarios, ubicación, servicios e identidad visual de forma clara y profesional.",
-      technologies: ["Diseño digital", "QR", "HTML/CSS", "Presentación"],
-      images: [
-        "/Proyectos/tarj1.png",
-        "/Proyectos/tarj2.png",
-        "/Proyectos/tarj3.png",
-        "/Proyectos/tarj4.png",
-        "/Proyectos/tarj5.png",
-        "/Proyectos/tarj6.png",
-        "/Proyectos/garota-shop-1.png",
-        "/Proyectos/garota-shop-2.png",
-        "/Proyectos/garota-shop-3.png",
-        "/Proyectos/bait-servicio-tecnico-1.png",
-        "/Proyectos/bait-servicio-tecnico-2.png",
-        "/Proyectos/bait-servicio-tecnico-3.png",
-      ],
-    },
-    {
-      title: "Brochures digitales para negocios",
-      type: "Brochure digital",
-      status: "Finalizado",
-      description:
-        "Brochures orientados a presentar servicios digitales, aplicaciones móviles, páginas web, tarjetas digitales, soluciones a medida y propuestas comerciales para negocios o marca personal.",
-      technologies: ["Diseño digital", "Brochure", "PDF", "Marketing"],
-      images: [
-        "/Proyectos/brochure1.png",
-        "/Proyectos/brochure2.png",
-        "/Proyectos/brochure3.png",
-      ],
-    },
-  ];
-
-  const technologies = [
-    "Android Studio",
-    "React",
-    "JavaScript",
-    "HTML",
-    "CSS",
-    "C#",
-    "SQL",
-    "Bases de datos",
-    "Git",
-    "GitHub",
-    "Visual Studio",
-    "Vite",
-  ];
-
-  const process = [
-    {
-      title: "Escucho tu idea",
-      description:
-        "Analizo tu necesidad, el objetivo del proyecto y qué problema debería resolver la solución digital.",
-      icon: MessageCircle,
-    },
-    {
-      title: "Diseño una propuesta",
-      description:
-        "Defino una estructura clara, funcionalidades principales, alcance inicial y una experiencia simple para el usuario.",
-      icon: Workflow,
-    },
-    {
-      title: "Desarrollo la solución",
-      description:
-        "Construyo el proyecto con foco en funcionalidad, diseño, orden, escalabilidad y facilidad de uso.",
-      icon: Code2,
-    },
-    {
-      title: "Entrega y mejoras",
-      description:
-        "Reviso el resultado, ajusto detalles y dejo la solución lista para presentar, usar o seguir evolucionando.",
-      icon: ShieldCheck,
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "¿Trabajás con negocios pequeños o emprendimientos?",
-      answer:
-        "Sí. La idea es crear soluciones digitales accesibles y profesionales para negocios, emprendedores y profesionales que quieran mejorar su presencia digital.",
-    },
-    {
-      question: "¿Puedo pedir una página simple para empezar?",
-      answer:
-        "Sí. Se puede comenzar con una landing page o página de presentación y luego agregar más secciones, funcionalidades o integraciones.",
-    },
-    {
-      question: "¿Hacés tarjetas digitales para compartir por WhatsApp?",
-      answer:
-        "Sí. Las tarjetas digitales son ideales para compartir datos de contacto, servicios, redes, ubicación, horarios y enlaces importantes desde un solo lugar.",
-    },
-    {
-      question: "¿Puedo pedir una app o sistema a medida?",
-      answer:
-        "Sí. Primero se analiza la necesidad, el flujo de trabajo y las funciones principales para definir una solución útil y ordenada.",
-    },
-    {
-      question: "¿Mostrás precios fijos?",
-      answer:
-        "No por ahora. Cada proyecto puede tener distinto alcance, por eso se trabaja con presupuesto según necesidad. Las consultas son sin compromiso.",
-    },
-  ];
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 34 },
-    visible: { opacity: 1, y: 0 },
-  };
+  }, [updateScrollData]);
 
   return (
     <main className="page">
+      {/* ─── BARRA DE PROGRESO ─── */}
       <div className="scroll-progress">
         <span style={{ width: `${scrollProgress}%` }}></span>
       </div>
 
+      {/* ─── HERO ─── */}
       <section className="hero" id="inicio">
         <div className="grid-overlay"></div>
         <div className="noise-overlay"></div>
@@ -457,14 +508,12 @@ function App() {
           </a>
 
           <div className="nav-links">
-            {sectionLinks.map((item) => (
+            {SECTION_LINKS.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
                 onClick={() => handleNavClick(item.id)}
-                className={`nav-link ${
-                  activeSection === item.id ? "nav-link-active" : ""
-                }`}
+                className={`nav-link${activeSection === item.id ? " nav-link-active" : ""}`}
               >
                 {item.label}
               </a>
@@ -585,6 +634,7 @@ function App() {
         </div>
       </section>
 
+      {/* ─── SERVICIOS ─── */}
       <section className="section" id="servicios">
         <motion.div
           className="section-header"
@@ -604,9 +654,8 @@ function App() {
         </motion.div>
 
         <div className="services-grid">
-          {services.map((service, index) => {
+          {SERVICES.map((service, index) => {
             const Icon = service.icon;
-
             return (
               <motion.article
                 className="service-card"
@@ -622,7 +671,6 @@ function App() {
                 </div>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
-
                 <div className="service-tags">
                   {service.items.map((item) => (
                     <span key={item}>{item}</span>
@@ -634,6 +682,7 @@ function App() {
         </div>
       </section>
 
+      {/* ─── PROYECTOS ─── */}
       <section className="section section-dark" id="proyectos">
         <motion.div
           className="section-header"
@@ -652,7 +701,7 @@ function App() {
         </motion.div>
 
         <div className="projects-list">
-          {projects.map((project, index) => (
+          {PROJECTS.map((project, index) => (
             <ProjectShowcase
               key={project.title}
               project={project}
@@ -663,6 +712,7 @@ function App() {
         </div>
       </section>
 
+      {/* ─── PROCESO ─── */}
       <section className="section process-section" id="proceso">
         <motion.div
           className="section-header"
@@ -681,9 +731,8 @@ function App() {
         </motion.div>
 
         <div className="process-grid">
-          {process.map((item, index) => {
+          {PROCESS.map((item, index) => {
             const Icon = item.icon;
-
             return (
               <motion.article
                 className="process-card"
@@ -704,6 +753,7 @@ function App() {
         </div>
       </section>
 
+      {/* ─── TECNOLOGÍAS ─── */}
       <section className="section technologies-section" id="tecnologias">
         <motion.div
           className="section-header"
@@ -722,7 +772,7 @@ function App() {
         </motion.div>
 
         <div className="tech-list">
-          {technologies.map((tech, index) => (
+          {TECHNOLOGIES.map((tech, index) => (
             <motion.span
               key={tech}
               initial={{ opacity: 0, scale: 0.86 }}
@@ -736,6 +786,7 @@ function App() {
         </div>
       </section>
 
+      {/* ─── SOBRE MÍ ─── */}
       <section className="section about-section" id="sobre-mi">
         <motion.div
           className="about-layout"
@@ -786,6 +837,7 @@ function App() {
         </motion.div>
       </section>
 
+      {/* ─── FAQ ─── */}
       <section className="section faq-section" id="faq">
         <motion.div
           className="section-header"
@@ -804,7 +856,7 @@ function App() {
         </motion.div>
 
         <div className="faq-grid">
-          {faqs.map((faq, index) => (
+          {FAQS.map((faq, index) => (
             <motion.article
               className="faq-card"
               key={faq.question}
@@ -822,6 +874,7 @@ function App() {
         </div>
       </section>
 
+      {/* ─── CONTACTO ─── */}
       <section className="contact" id="contacto">
         <motion.div
           initial="hidden"
@@ -890,13 +943,18 @@ function App() {
             Enviar email por Gmail
           </a>
 
-          <button type="button" className="btn btn-copy" onClick={handleCopyEmail}>
+          <button
+            type="button"
+            className="btn btn-copy"
+            onClick={handleCopyEmail}
+          >
             {copiedEmail ? <Check size={18} /> : <Copy size={18} />}
             {copiedEmail ? "Email copiado" : "Copiar email"}
           </button>
         </motion.div>
       </section>
 
+      {/* ─── FOOTER ─── */}
       <footer className="footer">
         <div>
           <p>© 2026 Cristian Schneider | Soluciones Digitales</p>
@@ -920,31 +978,55 @@ function App() {
         </div>
       </footer>
 
-      {previewImage && (
-        <div className="image-modal" onClick={() => setPreviewImage(null)}>
-          <button className="modal-close" onClick={() => setPreviewImage(null)}>
-            <X size={22} />
-          </button>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <img src={previewImage.image} alt={previewImage.title} />
-            <p>{previewImage.title}</p>
-          </div>
-        </div>
-      )}
+      {/* ─── MODAL DE IMAGEN ─── */}
+      <AnimatePresence>
+        {previewImage && (
+          <motion.div
+            className="image-modal"
+            onClick={() => setPreviewImage(null)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+          >
+            <button
+              className="modal-close"
+              onClick={() => setPreviewImage(null)}
+              aria-label="Cerrar imagen"
+            >
+              <X size={22} />
+            </button>
+            <motion.div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.96, y: 12, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.96, y: 12, opacity: 0 }}
+              transition={{ duration: 0.28 }}
+            >
+              <img src={previewImage.image} alt={previewImage.title} />
+              <p>{previewImage.title}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {showTopButton && (
-        <button
-          className="back-to-top"
-          onClick={() =>
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            })
-          }
-        >
-          <ChevronUp size={20} />
-        </button>
-      )}
+      {/* ─── BOTÓN VOLVER ARRIBA ─── */}
+      <AnimatePresence>
+        {showTopButton && (
+          <motion.button
+            className="back-to-top"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Volver al inicio"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ChevronUp size={20} />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
