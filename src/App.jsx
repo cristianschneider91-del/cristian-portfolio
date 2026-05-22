@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Smartphone,
   Monitor,
@@ -26,16 +26,22 @@ import {
   ChevronUp,
   Copy,
   Check,
+  Palette,
+  Layers3,
+  BadgeCheck,
+  Zap,
+  PackageCheck,
+  ShoppingBag,
+  Gauge,
+  Star,
 } from "lucide-react";
 import "./App.css";
-
-// ─── DATOS ESTÁTICOS FUERA DEL COMPONENTE ───────────────────────────────────
-// Evita que se recreen en cada render
 
 const SECTION_LINKS = [
   { id: "inicio", label: "Inicio" },
   { id: "servicios", label: "Servicios" },
   { id: "proyectos", label: "Proyectos" },
+  { id: "paquetes", label: "Paquetes" },
   { id: "proceso", label: "Proceso" },
   { id: "tecnologias", label: "Tecnologías" },
   { id: "contacto", label: "Contacto" },
@@ -104,6 +110,7 @@ const PROJECTS = [
   {
     title: "App móvil de gestión para taller mecánico",
     type: "Aplicación móvil",
+    category: "Apps",
     status: "Finalizado",
     description:
       "Aplicación personalizada para la gestión técnica y administrativa de un taller mecánico. Permite registrar clientes y vehículos, crear órdenes de trabajo, cargar servicios y costos, adjuntar fotos o archivos, generar presupuestos/facturas, administrar copias de seguridad y consultar un manual de uso interno.",
@@ -123,6 +130,7 @@ const PROJECTS = [
   {
     title: "Tarjetas digitales profesionales",
     type: "Tarjeta digital",
+    category: "Tarjetas",
     status: "Finalizado",
     description:
       "Diseño de tarjetas digitales personalizadas para profesionales y comercios, pensadas para compartir información de contacto, horarios, ubicación, servicios e identidad visual de forma clara y profesional.",
@@ -145,6 +153,7 @@ const PROJECTS = [
   {
     title: "Brochures digitales para negocios",
     type: "Brochure digital",
+    category: "Diseño",
     status: "Finalizado",
     description:
       "Brochures orientados a presentar servicios digitales, aplicaciones móviles, páginas web, tarjetas digitales, soluciones a medida y propuestas comerciales para negocios o marca personal.",
@@ -154,6 +163,34 @@ const PROJECTS = [
       "/Proyectos/brochure2.png",
       "/Proyectos/brochure3.png",
     ],
+  },
+];
+
+const PACKAGES = [
+  {
+    title: "Pack Emprendedor",
+    label: "Para empezar rápido",
+    description:
+      "Ideal para negocios que necesitan verse profesionales y tener una presentación clara para compartir por WhatsApp o Instagram.",
+    icon: ShoppingBag,
+    includes: ["Logo base", "Tarjeta digital", "Flyer de presentación", "Adaptación para redes"],
+  },
+  {
+    title: "Pack Profesional",
+    label: "Más presencia visual",
+    description:
+      "Pensado para comercios y profesionales que quieren una imagen más completa y material listo para publicar.",
+    icon: Palette,
+    includes: ["Tarjeta digital", "3 flyers", "Portada para WhatsApp", "Mockups comerciales"],
+    featured: true,
+  },
+  {
+    title: "Pack Web",
+    label: "Presencia digital completa",
+    description:
+      "Para negocios que quieren una página web catálogo, contacto directo, estructura comercial y una base escalable.",
+    icon: Globe,
+    includes: ["Web catálogo", "Formulario", "WhatsApp directo", "Mantenimiento inicial"],
   },
 ];
 
@@ -232,13 +269,15 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
-// ─── COMPONENTE PROJECT SHOWCASE ────────────────────────────────────────────
+const cardEnter = {
+  hidden: { opacity: 0, y: 28, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1 },
+};
 
 function ProjectShowcase({ project, index, onOpenImage }) {
   const [activeImage, setActiveImage] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Resetea el estado de carga al cambiar de imagen
   const handleThumbnailClick = (imageIndex) => {
     if (imageIndex === activeImage) return;
     setImageLoaded(false);
@@ -247,14 +286,14 @@ function ProjectShowcase({ project, index, onOpenImage }) {
 
   return (
     <motion.article
-      className="project-card"
-      initial={{ opacity: 0, y: 34 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      className="project-card premium-border"
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.65, delay: index * 0.08 }}
+      variants={cardEnter}
+      transition={{ duration: 0.62, delay: index * 0.08 }}
     >
       <div className="project-media">
-        {/* Imagen principal con skeleton loader y fade al cambiar */}
         <button
           className={`featured-image${!imageLoaded ? " image-loading" : ""}`}
           onClick={() => onOpenImage(project.images[activeImage], project.title)}
@@ -262,23 +301,23 @@ function ProjectShowcase({ project, index, onOpenImage }) {
         >
           <AnimatePresence mode="wait">
             <motion.img
-              key={activeImage}
+              key={project.images[activeImage]}
               src={project.images[activeImage]}
               alt={`${project.title} imagen principal`}
               loading="lazy"
               decoding="async"
               onLoad={() => setImageLoaded(true)}
-              style={{ opacity: imageLoaded ? 1 : 0 }}
-              initial={{ opacity: 0, scale: 0.97 }}
+              initial={{ opacity: 0, scale: 1.03 }}
               animate={{ opacity: imageLoaded ? 1 : 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.32 }}
             />
           </AnimatePresence>
           <span className="image-action">
             <ImageIcon size={18} />
             Ver imagen
           </span>
+          <span className="image-glow"></span>
         </button>
 
         <div className="thumbnail-row">
@@ -316,14 +355,13 @@ function ProjectShowcase({ project, index, onOpenImage }) {
         </div>
 
         <div className="project-counter">
+          <Star size={15} />
           {project.images.length} imágenes disponibles
         </div>
       </div>
     </motion.article>
   );
 }
-
-// ─── COMPONENTE PRINCIPAL ────────────────────────────────────────────────────
 
 function App() {
   const whatsappNumber = "543751617994";
@@ -334,6 +372,8 @@ function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showTopButton, setShowTopButton] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [activeProjectFilter, setActiveProjectFilter] = useState("Todos");
+  const [cursorGlow, setCursorGlow] = useState({ x: 50, y: 20 });
 
   const links = {
     whatsapp: `https://wa.me/${whatsappNumber}?text=Hola%20Cristian,%20quiero%20consultarte%20por%20un%20proyecto%20digital.`,
@@ -342,6 +382,16 @@ function App() {
     github: "https://github.com/cristianschneider91-del",
     instagram: "https://www.instagram.com/schneider.soft",
   };
+
+  const projectFilters = useMemo(
+    () => ["Todos", ...new Set(PROJECTS.map((project) => project.category))],
+    []
+  );
+
+  const filteredProjects = useMemo(() => {
+    if (activeProjectFilter === "Todos") return PROJECTS;
+    return PROJECTS.filter((project) => project.category === activeProjectFilter);
+  }, [activeProjectFilter]);
 
   const handleCopyEmail = async () => {
     try {
@@ -357,25 +407,24 @@ function App() {
     setActiveSection(sectionId);
   };
 
-  // ─── Cerrar modal con Escape ──────────────────────────────────────────────
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") setPreviewImage(null);
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setPreviewImage(null);
     };
+
     if (previewImage) {
       window.addEventListener("keydown", handleKeyDown);
-      // Bloquea scroll del body mientras el modal está abierto
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
   }, [previewImage]);
 
-  // ─── Scroll con requestAnimationFrame para evitar jank ───────────────────
   const updateScrollData = useCallback(() => {
     const scrollTop = window.scrollY;
     const documentHeight =
@@ -413,30 +462,6 @@ function App() {
       }
     });
 
-    const visibleSectionFound = SECTION_LINKS.some((item) => {
-      const section = document.getElementById(item.id);
-      if (!section) return false;
-      const rect = section.getBoundingClientRect();
-      return rect.top <= detectionLine && rect.bottom >= detectionLine;
-    });
-
-    if (!visibleSectionFound) {
-      let closestSection = "inicio";
-      let closestTop = Number.NEGATIVE_INFINITY;
-
-      SECTION_LINKS.forEach((item) => {
-        const section = document.getElementById(item.id);
-        if (!section) return;
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= detectionLine && rect.top > closestTop) {
-          closestTop = rect.top;
-          closestSection = item.id;
-        }
-      });
-
-      currentSection = closestSection;
-    }
-
     const isAtBottom =
       window.innerHeight + window.scrollY >=
       document.documentElement.scrollHeight - 80;
@@ -469,14 +494,24 @@ function App() {
     };
   }, [updateScrollData]);
 
+  const handleMouseMove = (event) => {
+    const x = (event.clientX / window.innerWidth) * 100;
+    const y = (event.clientY / window.innerHeight) * 100;
+    setCursorGlow({ x, y });
+  };
+
   return (
-    <main className="page">
-      {/* ─── BARRA DE PROGRESO ─── */}
+    <main
+      className="page"
+      onMouseMove={handleMouseMove}
+      style={{ "--cursor-x": `${cursorGlow.x}%`, "--cursor-y": `${cursorGlow.y}%` }}
+    >
+      <div className="cursor-light"></div>
+
       <div className="scroll-progress">
         <span style={{ width: `${scrollProgress}%` }}></span>
       </div>
 
-      {/* ─── HERO ─── */}
       <section className="hero" id="inicio">
         <div className="grid-overlay"></div>
         <div className="noise-overlay"></div>
@@ -502,8 +537,8 @@ function App() {
               <Code2 size={25} />
             </span>
             <span>
-              Cristian Schneider
-              <small>Soluciones Digitales</small>
+              Schneider Digital
+              <small>Software & Branding</small>
             </span>
           </a>
 
@@ -531,25 +566,23 @@ function App() {
           >
             <div className="badge">
               <Sparkles size={16} />
-              Desarrollo de software y soluciones digitales
+              Desarrollo, diseño digital y soluciones para vender mejor
             </div>
 
             <h1>
-              Desarrollo software y soluciones digitales para negocios que
-              quieren <span>crecer con tecnología</span>
+              Transformo negocios en experiencias digitales que se ven
+              <span> profesionales, modernas y confiables</span>
             </h1>
 
             <p className="hero-description">
-              Creo aplicaciones móviles, sistemas de escritorio, páginas web,
-              tarjetas digitales y folletos profesionales, pensados para ayudar
-              a negocios, emprendedores y profesionales a organizarse mejor,
-              presentarse con mayor confianza y dar el siguiente paso en el
-              mundo digital.
+              Desarrollo páginas web, aplicaciones, tarjetas digitales, identidad visual
+              y materiales comerciales para que emprendedores, comercios y profesionales
+              puedan presentarse mejor, ordenar sus procesos y captar más consultas.
             </p>
 
             <div className="hero-actions">
               <a href="#proyectos" className="btn btn-primary">
-                Ver proyectos
+                Ver trabajos reales
                 <ArrowRight size={18} />
               </a>
 
@@ -560,15 +593,15 @@ function App() {
                 className="btn btn-secondary"
               >
                 <MessageCircle size={18} />
-                Contactanos por WhatsApp
+                Pedir asesoramiento
               </a>
             </div>
 
             <div className="hero-pills">
-              <span>Aplicaciones Android e iOS</span>
               <span>Webs profesionales</span>
-              <span>Sistemas de gestión</span>
               <span>Tarjetas digitales</span>
+              <span>Apps y sistemas</span>
+              <span>Branding comercial</span>
             </div>
           </motion.div>
 
@@ -578,63 +611,38 @@ function App() {
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.85, delay: 0.25 }}
           >
-            <div className="showcase-card main-showcase">
-              <div className="panel-header">
-                <div className="window-controls">
+            <div className="premium-showcase-card">
+              <div className="showcase-orbit"></div>
+              <div className="mockup-window mockup-main">
+                <div className="mockup-bar">
                   <span></span>
                   <span></span>
                   <span></span>
+                  <small>portfolio.preview</small>
                 </div>
-                <p>solución.config</p>
+                <img src="/Proyectos/bait-servicio-tecnico-1.png" alt="Tarjeta digital BAIT" />
               </div>
 
-              <div className="code-card">
-                <p>
-                  <span className="code-purple">const</span>{" "}
-                  <span className="code-blue">solución</span> = {"{"}
-                </p>
-                <p>
-                  &nbsp;&nbsp;marca:{" "}
-                  <span className="code-green">"Cristian Schneider"</span>,
-                </p>
-                <p>
-                  &nbsp;&nbsp;enfoque:{" "}
-                  <span className="code-green">"negocios"</span>,
-                </p>
-                <p>
-                  &nbsp;&nbsp;servicios: [
-                  <span className="code-green">"aplicaciones"</span>,{" "}
-                  <span className="code-green">"webs"</span>,{" "}
-                  <span className="code-green">"sistemas"</span>],
-                </p>
-                <p>
-                  &nbsp;&nbsp;resultado:{" "}
-                  <span className="code-green">"crecimiento digital"</span>
-                </p>
-                <p>{"}"}</p>
+              <div className="mockup-phone">
+                <img src="/Proyectos/garota-shop-1.png" alt="Tarjeta digital Garota Shop" />
               </div>
-            </div>
 
-            <div className="floating-card card-top">
-              <Cpu size={22} />
-              <div>
-                <strong>Código limpio</strong>
-                <span>Soluciones escalables</span>
+              <div className="showcase-metric metric-one">
+                <BadgeCheck size={20} />
+                <strong>Imagen profesional</strong>
+                <span>Diseño listo para compartir</span>
               </div>
-            </div>
 
-            <div className="floating-card card-bottom">
-              <Database size={22} />
-              <div>
-                <strong>Gestión de datos</strong>
-                <span>Orden y resultados</span>
+              <div className="showcase-metric metric-two">
+                <Gauge size={20} />
+                <strong>Enfoque comercial</strong>
+                <span>Más confianza, más consultas</span>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ─── SERVICIOS ─── */}
       <section className="section" id="servicios">
         <motion.div
           className="section-header"
@@ -645,25 +653,25 @@ function App() {
           transition={{ duration: 0.7 }}
         >
           <p className="eyebrow">Servicios</p>
-          <h2>Soluciones completas para tu negocio</h2>
+          <h2>Soluciones digitales pensadas para negocios reales</h2>
           <p>
-            Desarrollo herramientas y piezas digitales pensadas para que tu
-            negocio se vea más profesional, organice mejor su información y
-            pueda presentarse con mayor confianza.
+            No se trata solo de tener una web o una tarjeta: la idea es que tu negocio
+            se entienda rápido, transmita confianza y tenga canales claros para recibir consultas.
           </p>
         </motion.div>
 
         <div className="services-grid">
           {SERVICES.map((service, index) => {
             const Icon = service.icon;
+
             return (
               <motion.article
-                className="service-card"
+                className="service-card premium-border"
                 key={service.title}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                variants={fadeUp}
+                variants={cardEnter}
                 transition={{ duration: 0.55, delay: index * 0.06 }}
               >
                 <div className="service-icon">
@@ -671,6 +679,7 @@ function App() {
                 </div>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
+
                 <div className="service-tags">
                   {service.items.map((item) => (
                     <span key={item}>{item}</span>
@@ -682,7 +691,6 @@ function App() {
         </div>
       </section>
 
-      {/* ─── PROYECTOS ─── */}
       <section className="section section-dark" id="proyectos">
         <motion.div
           className="section-header"
@@ -693,26 +701,96 @@ function App() {
           transition={{ duration: 0.7 }}
         >
           <p className="eyebrow">Proyectos</p>
-          <h2>Trabajos realizados y soluciones desarrolladas</h2>
+          <h2>Portfolio visual con trabajos reales</h2>
           <p>
-            Proyectos reales orientados a gestión, presencia digital,
-            presentación profesional y soluciones prácticas para negocios.
+            Galería de aplicaciones, tarjetas digitales y piezas comerciales desarrolladas
+            para mejorar presencia digital, presentación profesional y contacto con clientes.
           </p>
         </motion.div>
 
-        <div className="projects-list">
-          {PROJECTS.map((project, index) => (
-            <ProjectShowcase
-              key={project.title}
-              project={project}
-              index={index}
-              onOpenImage={(image, title) => setPreviewImage({ image, title })}
-            />
+        <div className="project-filters">
+          {projectFilters.map((filter) => (
+            <button
+              key={filter}
+              className={activeProjectFilter === filter ? "filter-active" : ""}
+              onClick={() => setActiveProjectFilter(filter)}
+            >
+              {filter}
+            </button>
           ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeProjectFilter}
+            className="projects-list"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.28 }}
+          >
+            {filteredProjects.map((project, index) => (
+              <ProjectShowcase
+                key={project.title}
+                project={project}
+                index={index}
+                onOpenImage={(image, title) => setPreviewImage({ image, title })}
+              />
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </section>
+
+      <section className="section packages-section" id="paquetes">
+        <motion.div
+          className="section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          variants={fadeUp}
+          transition={{ duration: 0.7 }}
+        >
+          <p className="eyebrow">Paquetes</p>
+          <h2>Opciones simples para vender más rápido</h2>
+          <p>
+            Paquetes pensados para que el cliente entienda rápido qué necesita:
+            empezar con una presentación digital, reforzar su imagen o avanzar con una web completa.
+          </p>
+        </motion.div>
+
+        <div className="packages-grid">
+          {PACKAGES.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <motion.article
+                key={item.title}
+                className={`package-card premium-border${item.featured ? " package-featured" : ""}`}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={cardEnter}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+              >
+                <div className="package-label">{item.label}</div>
+                <div className="package-icon">
+                  <Icon size={28} />
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <ul>
+                  {item.includes.map((feature) => (
+                    <li key={feature}>
+                      <Check size={16} />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </motion.article>
+            );
+          })}
         </div>
       </section>
 
-      {/* ─── PROCESO ─── */}
       <section className="section process-section" id="proceso">
         <motion.div
           className="section-header"
@@ -733,14 +811,15 @@ function App() {
         <div className="process-grid">
           {PROCESS.map((item, index) => {
             const Icon = item.icon;
+
             return (
               <motion.article
-                className="process-card"
+                className="process-card premium-border"
                 key={item.title}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                variants={fadeUp}
+                variants={cardEnter}
                 transition={{ duration: 0.6, delay: index * 0.08 }}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -753,7 +832,6 @@ function App() {
         </div>
       </section>
 
-      {/* ─── TECNOLOGÍAS ─── */}
       <section className="section technologies-section" id="tecnologias">
         <motion.div
           className="section-header"
@@ -786,7 +864,6 @@ function App() {
         </div>
       </section>
 
-      {/* ─── SOBRE MÍ ─── */}
       <section className="section about-section" id="sobre-mi">
         <motion.div
           className="about-layout"
@@ -799,11 +876,11 @@ function App() {
           <div>
             <p className="eyebrow">Sobre mí</p>
             <h2>
-              Desarrollo software con enfoque práctico y orientado a negocios
+              Desarrollo software con enfoque práctico y mirada comercial
             </h2>
           </div>
 
-          <div className="about-card">
+          <div className="about-card premium-border">
             <p>
               Soy Cristian Schneider, desarrollador de software en formación,
               enfocado en crear soluciones digitales funcionales para negocios,
@@ -837,7 +914,6 @@ function App() {
         </motion.div>
       </section>
 
-      {/* ─── FAQ ─── */}
       <section className="section faq-section" id="faq">
         <motion.div
           className="section-header"
@@ -858,12 +934,12 @@ function App() {
         <div className="faq-grid">
           {FAQS.map((faq, index) => (
             <motion.article
-              className="faq-card"
+              className="faq-card premium-border"
               key={faq.question}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
-              variants={fadeUp}
+              variants={cardEnter}
               transition={{ duration: 0.55, delay: index * 0.06 }}
             >
               <HelpCircle size={22} />
@@ -874,7 +950,6 @@ function App() {
         </div>
       </section>
 
-      {/* ─── CONTACTO ─── */}
       <section className="contact" id="contacto">
         <motion.div
           initial="hidden"
@@ -884,11 +959,10 @@ function App() {
           transition={{ duration: 0.7 }}
         >
           <p className="eyebrow">Contacto</p>
-          <h2>¿Tenés una idea o proyecto digital?</h2>
+          <h2>Tu negocio puede verse más profesional esta semana</h2>
           <p>
-            Podemos conversar sobre tu negocio, emprendimiento o necesidad y ver
-            cómo transformarlo en una solución digital profesional. Consultas
-            sin compromiso y presupuesto según proyecto.
+            Contame qué vendés o qué servicio ofrecés y te asesoro con la mejor
+            opción: tarjeta digital, página web, logo, flyer o sistema.
           </p>
 
           <div className="contact-info">
@@ -943,22 +1017,17 @@ function App() {
             Enviar email por Gmail
           </a>
 
-          <button
-            type="button"
-            className="btn btn-copy"
-            onClick={handleCopyEmail}
-          >
+          <button type="button" className="btn btn-copy" onClick={handleCopyEmail}>
             {copiedEmail ? <Check size={18} /> : <Copy size={18} />}
             {copiedEmail ? "Email copiado" : "Copiar email"}
           </button>
         </motion.div>
       </section>
 
-      {/* ─── FOOTER ─── */}
       <footer className="footer">
         <div>
-          <p>© 2026 Cristian Schneider | Soluciones Digitales</p>
-          <span>Código limpio. Soluciones escalables. Resultados reales.</span>
+          <p>© 2026 Cristian Schneider | Schneider Digital</p>
+          <span>Código limpio. Diseño profesional. Resultados reales.</span>
         </div>
 
         <div className="footer-links">
@@ -978,7 +1047,6 @@ function App() {
         </div>
       </footer>
 
-      {/* ─── MODAL DE IMAGEN ─── */}
       <AnimatePresence>
         {previewImage && (
           <motion.div
@@ -998,7 +1066,7 @@ function App() {
             </button>
             <motion.div
               className="modal-content"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
               initial={{ scale: 0.96, y: 12, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.96, y: 12, opacity: 0 }}
@@ -1011,7 +1079,6 @@ function App() {
         )}
       </AnimatePresence>
 
-      {/* ─── BOTÓN VOLVER ARRIBA ─── */}
       <AnimatePresence>
         {showTopButton && (
           <motion.button
