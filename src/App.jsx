@@ -34,6 +34,11 @@ import {
   ShoppingBag,
   Gauge,
   Star,
+  TrendingUp,
+  Users,
+  Clock3,
+  Quote,
+  Target,
 } from "lucide-react";
 import "./App.css";
 
@@ -41,9 +46,7 @@ const SECTION_LINKS = [
   { id: "inicio", label: "Inicio" },
   { id: "servicios", label: "Servicios" },
   { id: "proyectos", label: "Proyectos" },
-  { id: "paquetes", label: "Paquetes" },
-  { id: "proceso", label: "Proceso" },
-  { id: "tecnologias", label: "Tecnologías" },
+  { id: "sobre-mi", label: "Sobre mí" },
   { id: "contacto", label: "Contacto" },
 ];
 
@@ -115,6 +118,12 @@ const PROJECTS = [
     description:
       "Aplicación personalizada para la gestión técnica y administrativa de un taller mecánico. Permite registrar clientes y vehículos, crear órdenes de trabajo, cargar servicios y costos, adjuntar fotos o archivos, generar presupuestos/facturas, administrar copias de seguridad y consultar un manual de uso interno.",
     technologies: ["Android Studio", "Gestión", "Backup", "PDF"],
+    benefits: [
+      "Registro de clientes y vehículos",
+      "Órdenes de trabajo",
+      "Presupuestos y facturas",
+      "Copias de seguridad",
+    ],
     images: [
       "/Proyectos/app-taller1.jpg",
       "/Proyectos/app-taller2.jpg",
@@ -135,6 +144,7 @@ const PROJECTS = [
     description:
       "Diseño de tarjetas digitales personalizadas para profesionales y comercios, pensadas para compartir información de contacto, horarios, ubicación, servicios e identidad visual de forma clara y profesional.",
     technologies: ["Diseño digital", "QR", "HTML/CSS", "Presentación"],
+    benefits: ["Contacto rápido", "Diseño compartible", "Información clara", "Identidad visual"],
     images: [
       "/Proyectos/tarj1.png",
       "/Proyectos/tarj2.png",
@@ -158,6 +168,7 @@ const PROJECTS = [
     description:
       "Brochures orientados a presentar servicios digitales, aplicaciones móviles, páginas web, tarjetas digitales, soluciones a medida y propuestas comerciales para negocios o marca personal.",
     technologies: ["Diseño digital", "Brochure", "PDF", "Marketing"],
+    benefits: ["Presentación comercial", "Material para redes", "Servicios organizados", "Imagen profesional"],
     images: [
       "/Proyectos/brochure1.png",
       "/Proyectos/brochure2.png",
@@ -191,6 +202,61 @@ const PACKAGES = [
       "Para negocios que quieren una página web catálogo, contacto directo, estructura comercial y una base escalable.",
     icon: Globe,
     includes: ["Web catálogo", "Formulario", "WhatsApp directo", "Mantenimiento inicial"],
+  },
+];
+
+
+const STATS = [
+  { value: "20+", label: "Piezas digitales y proyectos creados", icon: PackageCheck },
+  { value: "100%", label: "Diseño adaptado a cada negocio", icon: Target },
+  { value: "24 h", label: "Respuesta promedio a consultas", icon: Clock3 },
+];
+
+const WHY_CHOOSE_ME = [
+  {
+    title: "Pensado para vender",
+    description:
+      "Cada sección se diseña para que el cliente entienda rápido tu propuesta y tenga un camino claro para contactarte.",
+    icon: TrendingUp,
+  },
+  {
+    title: "Diseño personalizado",
+    description:
+      "No trabajo con una plantilla genérica: adapto colores, textos, estructura e imágenes según tu negocio.",
+    icon: Palette,
+  },
+  {
+    title: "Comunicación directa",
+    description:
+      "Te acompaño con explicaciones simples, avances claros y ajustes concretos durante el desarrollo.",
+    icon: MessageCircle,
+  },
+  {
+    title: "Base escalable",
+    description:
+      "Podés empezar con algo simple y después sumar funcionalidades, secciones, formularios o sistemas internos.",
+    icon: Layers3,
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Cliente de taller mecánico",
+    business: "Sistema de gestión",
+    text:
+      "El sistema permitió ordenar clientes, vehículos, órdenes de trabajo y presupuestos en una sola herramienta.",
+  },
+  {
+    name: "Comercio local",
+    business: "Tarjeta digital",
+    text:
+      "La tarjeta digital ayudó a presentar servicios, horarios, redes y contacto de una forma más profesional.",
+  },
+  {
+    name: "Emprendimiento comercial",
+    business: "Presencia digital",
+    text:
+      "El material visual hizo que el negocio se vea más confiable y fácil de compartir por WhatsApp e Instagram.",
   },
 ];
 
@@ -353,6 +419,17 @@ function ProjectShowcase({ project, index, onOpenImage }) {
             <span key={tech}>{tech}</span>
           ))}
         </div>
+
+        {project.benefits && (
+          <ul className="project-benefits">
+            {project.benefits.map((benefit) => (
+              <li key={benefit}>
+                <Check size={16} />
+                {benefit}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="project-counter">
           <Star size={15} />
@@ -570,19 +647,19 @@ function App() {
             </div>
 
             <h1>
-              Transformo negocios en experiencias digitales que se ven
-              <span> profesionales, modernas y confiables</span>
+              Ayudo a negocios y emprendedores a conseguir más clientes
+              <span> con soluciones digitales profesionales</span>
             </h1>
 
             <p className="hero-description">
-              Desarrollo páginas web, aplicaciones, tarjetas digitales, identidad visual
-              y materiales comerciales para que emprendedores, comercios y profesionales
-              puedan presentarse mejor, ordenar sus procesos y captar más consultas.
+              Páginas web, sistemas, aplicaciones y presencia digital diseñados
+              para generar confianza, destacar frente a la competencia y facilitar
+              el contacto con nuevos clientes.
             </p>
 
             <div className="hero-actions">
               <a href="#proyectos" className="btn btn-primary">
-                Ver trabajos reales
+                Quiero mejorar mi negocio
                 <ArrowRight size={18} />
               </a>
 
@@ -643,6 +720,29 @@ function App() {
         </div>
       </section>
 
+      <section className="stats-section" aria-label="Indicadores de confianza">
+        <div className="stats-grid">
+          {STATS.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                className="stat-card premium-border"
+                key={stat.label}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                variants={cardEnter}
+                transition={{ duration: 0.5, delay: index * 0.06 }}
+              >
+                <Icon size={24} />
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
       <section className="section" id="servicios">
         <motion.div
           className="section-header"
@@ -685,6 +785,45 @@ function App() {
                     <span key={item}>{item}</span>
                   ))}
                 </div>
+              </motion.article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="section why-section" id="beneficios">
+        <motion.div
+          className="section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          variants={fadeUp}
+          transition={{ duration: 0.7 }}
+        >
+          <p className="eyebrow">Por qué elegirme</p>
+          <h2>Diseño y desarrollo con enfoque comercial</h2>
+          <p>
+            El objetivo no es solo que tu web se vea linda: tiene que generar confianza,
+            explicar tu propuesta y hacer que el cliente quiera consultarte.
+          </p>
+        </motion.div>
+
+        <div className="why-grid">
+          {WHY_CHOOSE_ME.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <motion.article
+                className="why-card premium-border"
+                key={item.title}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={cardEnter}
+                transition={{ duration: 0.55, delay: index * 0.06 }}
+              >
+                <Icon size={27} />
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
               </motion.article>
             );
           })}
@@ -950,6 +1089,45 @@ function App() {
         </div>
       </section>
 
+      <section className="section testimonials-section" id="testimonios">
+        <motion.div
+          className="section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          variants={fadeUp}
+          transition={{ duration: 0.7 }}
+        >
+          <p className="eyebrow">Confianza</p>
+          <h2>Resultados que ayudan a presentar mejor cada negocio</h2>
+          <p>
+            Estos ejemplos resumen el tipo de mejora que busco en cada proyecto:
+            más orden, mejor imagen y contacto más directo con potenciales clientes.
+          </p>
+        </motion.div>
+
+        <div className="testimonials-grid">
+          {TESTIMONIALS.map((testimonial, index) => (
+            <motion.article
+              className="testimonial-card premium-border"
+              key={testimonial.name}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={cardEnter}
+              transition={{ duration: 0.55, delay: index * 0.06 }}
+            >
+              <Quote size={28} />
+              <p>{testimonial.text}</p>
+              <div>
+                <strong>{testimonial.name}</strong>
+                <span>{testimonial.business}</span>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
       <section className="contact" id="contacto">
         <motion.div
           initial="hidden"
@@ -1046,6 +1224,17 @@ function App() {
           </a>
         </div>
       </footer>
+
+      <a
+        href={links.whatsapp}
+        target="_blank"
+        rel="noreferrer"
+        className="floating-whatsapp"
+        aria-label="Consultar por WhatsApp"
+      >
+        <MessageCircle size={24} />
+        <span>Consultar</span>
+      </a>
 
       <AnimatePresence>
         {previewImage && (
